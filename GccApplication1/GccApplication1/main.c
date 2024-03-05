@@ -168,7 +168,7 @@ const char font[][5]={
 {0x00,0x3C,0x22,0x3C,0x00},	// 0x7F
 {0x00,0x1C,0xA2,0x62,0x22},	// 0x80
 	};
-	
+	//test
 void GLCD_Command(char Command)		/* GLCD command function */
 {
 	Dio_Write_channel_group(dataport,8,Command);		/* Copy command on data pin */
