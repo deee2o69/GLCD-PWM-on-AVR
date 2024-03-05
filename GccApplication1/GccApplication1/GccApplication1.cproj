@@ -148,6 +148,9 @@
     <Compile Include="GLCD.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="GLCD_cfg.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>

@@ -11,21 +11,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000bcc  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 000000a0  00000000  00000000  00000c08  2**0
+  4 .debug_aranges 000000c8  00000000  00000000  00000c08  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000012fe  00000000  00000000  00000ca8  2**0
+  5 .debug_info   0000145a  00000000  00000000  00000cd0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000008c9  00000000  00000000  00001fa6  2**0
+  6 .debug_abbrev 000009ac  00000000  00000000  0000212a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000081c  00000000  00000000  0000286f  2**0
+  7 .debug_line   0000093f  00000000  00000000  00002ad6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  000001f0  00000000  00000000  0000308c  2**2
+  8 .debug_frame  00000218  00000000  00000000  00003418  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000004a7  00000000  00000000  0000327c  2**0
+  9 .debug_str    000004d7  00000000  00000000  00003630  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000b26  00000000  00000000  00003723  2**0
+ 10 .debug_loc    00000a3a  00000000  00000000  00003b07  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 000000b0  00000000  00000000  00004249  2**0
+ 11 .debug_ranges 000000c8  00000000  00000000  00004541  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -73,7 +73,7 @@ Disassembly of section .text:
   70:	a4 37       	cpi	r26, 0x74	; 116
   72:	b1 07       	cpc	r27, r17
   74:	d9 f7       	brne	.-10     	; 0x6c <__do_copy_data+0xc>
-  76:	0e 94 1e 03 	call	0x63c	; 0x63c <main>
+  76:	0e 94 30 03 	call	0x660	; 0x660 <main>
   7a:	0c 94 08 04 	jmp	0x810	; 0x810 <_exit>
 
 0000007e <__bad_interrupt>:
@@ -530,631 +530,678 @@ Disassembly of section .text:
  3ce:	df 90       	pop	r13
  3d0:	08 95       	ret
 
-000003d2 <GLCD_Command>:
-{0x00,0x1C,0xA2,0x62,0x22},	// 0x80
-	};
-	
+000003d2 <SELECTFIRST>:
+#include "Dio.h"
+#include "GLCD_cfg.h"
+#include "GLCD.h"
+
+ void SELECTBOTH()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ void SELECTFIRST()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_LOW)		   ;  }
+ 3d2:	60 e0       	ldi	r22, 0x00	; 0
+ 3d4:	8c e0       	ldi	r24, 0x0C	; 12
+ 3d6:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 3da:	61 e0       	ldi	r22, 0x01	; 1
+ 3dc:	8d e0       	ldi	r24, 0x0D	; 13
+ 3de:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 3e2:	08 95       	ret
+
+000003e4 <SELECTSECOND>:
+ void SELECTSECOND()	{Dio_Write_channel(CS1,!STD_LOW) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ 3e4:	61 e0       	ldi	r22, 0x01	; 1
+ 3e6:	8c e0       	ldi	r24, 0x0C	; 12
+ 3e8:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 3ec:	60 e0       	ldi	r22, 0x00	; 0
+ 3ee:	8d e0       	ldi	r24, 0x0D	; 13
+ 3f0:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 3f4:	08 95       	ret
+
+000003f6 <GLCD_Command>:
+
+
 void GLCD_Command(char Command)		/* GLCD command function */
 {
 	Dio_Write_channel_group(dataport,8,Command);		/* Copy command on data pin */
- 3d2:	48 2f       	mov	r20, r24
- 3d4:	68 e0       	ldi	r22, 0x08	; 8
- 3d6:	86 ea       	ldi	r24, 0xA6	; 166
- 3d8:	90 e0       	ldi	r25, 0x00	; 0
- 3da:	0e 94 93 01 	call	0x326	; 0x326 <Dio_Write_channel_group>
+ 3f6:	48 2f       	mov	r20, r24
+ 3f8:	68 e0       	ldi	r22, 0x08	; 8
+ 3fa:	86 ea       	ldi	r24, 0xA6	; 166
+ 3fc:	90 e0       	ldi	r25, 0x00	; 0
+ 3fe:	0e 94 93 01 	call	0x326	; 0x326 <Dio_Write_channel_group>
 	Dio_Write_channel(RS,STD_LOW) ;						/* Make RS LOW for command register*/
- 3de:	60 e0       	ldi	r22, 0x00	; 0
- 3e0:	89 e0       	ldi	r24, 0x09	; 9
- 3e2:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 402:	60 e0       	ldi	r22, 0x00	; 0
+ 404:	89 e0       	ldi	r24, 0x09	; 9
+ 406:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 	Dio_Write_channel(RW,STD_LOW) ;						/* Make RW LOW for write operation */
- 3e6:	60 e0       	ldi	r22, 0x00	; 0
- 3e8:	8a e0       	ldi	r24, 0x0A	; 10
- 3ea:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 40a:	60 e0       	ldi	r22, 0x00	; 0
+ 40c:	8a e0       	ldi	r24, 0x0A	; 10
+ 40e:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 	Dio_Write_channel(EN,STD_HIGH); 					/* Make HIGH-LOW transition on Enable */
- 3ee:	61 e0       	ldi	r22, 0x01	; 1
- 3f0:	8b e0       	ldi	r24, 0x0B	; 11
- 3f2:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 412:	61 e0       	ldi	r22, 0x01	; 1
+ 414:	8b e0       	ldi	r24, 0x0B	; 11
+ 416:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 3f6:	8d e0       	ldi	r24, 0x0D	; 13
- 3f8:	8a 95       	dec	r24
- 3fa:	f1 f7       	brne	.-4      	; 0x3f8 <GLCD_Command+0x26>
- 3fc:	00 00       	nop
+ 41a:	8d e0       	ldi	r24, 0x0D	; 13
+ 41c:	8a 95       	dec	r24
+ 41e:	f1 f7       	brne	.-4      	; 0x41c <__EEPROM_REGION_LENGTH__+0x1c>
+ 420:	00 00       	nop
 	_delay_us(5);
-	Dio_Write_channel(EN,STD_LOW); 
- 3fe:	60 e0       	ldi	r22, 0x00	; 0
- 400:	8b e0       	ldi	r24, 0x0B	; 11
- 402:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 406:	8d e0       	ldi	r24, 0x0D	; 13
- 408:	8a 95       	dec	r24
- 40a:	f1 f7       	brne	.-4      	; 0x408 <__EEPROM_REGION_LENGTH__+0x8>
- 40c:	00 00       	nop
- 40e:	08 95       	ret
+	Dio_Write_channel(EN,STD_LOW);
+ 422:	60 e0       	ldi	r22, 0x00	; 0
+ 424:	8b e0       	ldi	r24, 0x0B	; 11
+ 426:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 42a:	8d e0       	ldi	r24, 0x0D	; 13
+ 42c:	8a 95       	dec	r24
+ 42e:	f1 f7       	brne	.-4      	; 0x42c <__EEPROM_REGION_LENGTH__+0x2c>
+ 430:	00 00       	nop
+ 432:	08 95       	ret
 
-00000410 <GLCD_Data>:
+00000434 <GLCD_Data>:
 	_delay_us(5);
 }
 
 void GLCD_Data(char Data)		/* GLCD data function */
 {
 	Dio_Write_channel_group(dataport,8,Data);		/* Copy command on data pin */
- 410:	48 2f       	mov	r20, r24
- 412:	68 e0       	ldi	r22, 0x08	; 8
- 414:	86 ea       	ldi	r24, 0xA6	; 166
- 416:	90 e0       	ldi	r25, 0x00	; 0
- 418:	0e 94 93 01 	call	0x326	; 0x326 <Dio_Write_channel_group>
+ 434:	48 2f       	mov	r20, r24
+ 436:	68 e0       	ldi	r22, 0x08	; 8
+ 438:	86 ea       	ldi	r24, 0xA6	; 166
+ 43a:	90 e0       	ldi	r25, 0x00	; 0
+ 43c:	0e 94 93 01 	call	0x326	; 0x326 <Dio_Write_channel_group>
 	Dio_Write_channel(RS,STD_HIGH) ;						/* Make RS LOW for command register*/
- 41c:	61 e0       	ldi	r22, 0x01	; 1
- 41e:	89 e0       	ldi	r24, 0x09	; 9
- 420:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 440:	61 e0       	ldi	r22, 0x01	; 1
+ 442:	89 e0       	ldi	r24, 0x09	; 9
+ 444:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 	Dio_Write_channel(RW,STD_LOW) ;						/* Make RW LOW for write operation */
- 424:	60 e0       	ldi	r22, 0x00	; 0
- 426:	8a e0       	ldi	r24, 0x0A	; 10
- 428:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 448:	60 e0       	ldi	r22, 0x00	; 0
+ 44a:	8a e0       	ldi	r24, 0x0A	; 10
+ 44c:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 	Dio_Write_channel(EN,STD_HIGH); 					/* Make HIGH-LOW transition on Enable */
- 42c:	61 e0       	ldi	r22, 0x01	; 1
- 42e:	8b e0       	ldi	r24, 0x0B	; 11
- 430:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 434:	8d e0       	ldi	r24, 0x0D	; 13
- 436:	8a 95       	dec	r24
- 438:	f1 f7       	brne	.-4      	; 0x436 <GLCD_Data+0x26>
- 43a:	00 00       	nop
+ 450:	61 e0       	ldi	r22, 0x01	; 1
+ 452:	8b e0       	ldi	r24, 0x0B	; 11
+ 454:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 458:	8d e0       	ldi	r24, 0x0D	; 13
+ 45a:	8a 95       	dec	r24
+ 45c:	f1 f7       	brne	.-4      	; 0x45a <GLCD_Data+0x26>
+ 45e:	00 00       	nop
 	_delay_us(5);
 	Dio_Write_channel(EN,STD_LOW);
- 43c:	60 e0       	ldi	r22, 0x00	; 0
- 43e:	8b e0       	ldi	r24, 0x0B	; 11
- 440:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 444:	8d e0       	ldi	r24, 0x0D	; 13
- 446:	8a 95       	dec	r24
- 448:	f1 f7       	brne	.-4      	; 0x446 <GLCD_Data+0x36>
- 44a:	00 00       	nop
- 44c:	08 95       	ret
+ 460:	60 e0       	ldi	r22, 0x00	; 0
+ 462:	8b e0       	ldi	r24, 0x0B	; 11
+ 464:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 468:	8d e0       	ldi	r24, 0x0D	; 13
+ 46a:	8a 95       	dec	r24
+ 46c:	f1 f7       	brne	.-4      	; 0x46a <GLCD_Data+0x36>
+ 46e:	00 00       	nop
+ 470:	08 95       	ret
 
-0000044e <GLCD_Init>:
+00000472 <GLCD_Init>:
 	_delay_us(5);
 }
 
 void GLCD_Init()			/* GLCD initialize function */
 {
- 44e:	cf 93       	push	r28
- 450:	df 93       	push	r29
- 452:	cd b7       	in	r28, 0x3d	; 61
- 454:	de b7       	in	r29, 0x3e	; 62
- 456:	2e 97       	sbiw	r28, 0x0e	; 14
- 458:	0f b6       	in	r0, 0x3f	; 63
- 45a:	f8 94       	cli
- 45c:	de bf       	out	0x3e, r29	; 62
- 45e:	0f be       	out	0x3f, r0	; 63
- 460:	cd bf       	out	0x3d, r28	; 61
-		Dio_dir dataportdir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
- 462:	88 e0       	ldi	r24, 0x08	; 8
- 464:	ee ea       	ldi	r30, 0xAE	; 174
- 466:	f0 e0       	ldi	r31, 0x00	; 0
- 468:	de 01       	movw	r26, r28
- 46a:	11 96       	adiw	r26, 0x01	; 1
- 46c:	01 90       	ld	r0, Z+
- 46e:	0d 92       	st	X+, r0
- 470:	8a 95       	dec	r24
- 472:	e1 f7       	brne	.-8      	; 0x46c <GLCD_Init+0x1e>
-		Dio_init_channel_group(dataport,	8,	dataportdir);
- 474:	ae 01       	movw	r20, r28
- 476:	4f 5f       	subi	r20, 0xFF	; 255
- 478:	5f 4f       	sbci	r21, 0xFF	; 255
- 47a:	68 e0       	ldi	r22, 0x08	; 8
- 47c:	86 ea       	ldi	r24, 0xA6	; 166
- 47e:	90 e0       	ldi	r25, 0x00	; 0
- 480:	0e 94 c4 01 	call	0x388	; 0x388 <Dio_init_channel_group>
+ 472:	cf 93       	push	r28
+ 474:	df 93       	push	r29
+ 476:	cd b7       	in	r28, 0x3d	; 61
+ 478:	de b7       	in	r29, 0x3e	; 62
+ 47a:	2e 97       	sbiw	r28, 0x0e	; 14
+ 47c:	0f b6       	in	r0, 0x3f	; 63
+ 47e:	f8 94       	cli
+ 480:	de bf       	out	0x3e, r29	; 62
+ 482:	0f be       	out	0x3f, r0	; 63
+ 484:	cd bf       	out	0x3d, r28	; 61
+	Dio_dir dataportdir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
+ 486:	88 e0       	ldi	r24, 0x08	; 8
+ 488:	ee ea       	ldi	r30, 0xAE	; 174
+ 48a:	f0 e0       	ldi	r31, 0x00	; 0
+ 48c:	de 01       	movw	r26, r28
+ 48e:	11 96       	adiw	r26, 0x01	; 1
+ 490:	01 90       	ld	r0, Z+
+ 492:	0d 92       	st	X+, r0
+ 494:	8a 95       	dec	r24
+ 496:	e1 f7       	brne	.-8      	; 0x490 <GLCD_Init+0x1e>
+	Dio_init_channel_group(dataport,	8,	dataportdir);
+ 498:	ae 01       	movw	r20, r28
+ 49a:	4f 5f       	subi	r20, 0xFF	; 255
+ 49c:	5f 4f       	sbci	r21, 0xFF	; 255
+ 49e:	68 e0       	ldi	r22, 0x08	; 8
+ 4a0:	86 ea       	ldi	r24, 0xA6	; 166
+ 4a2:	90 e0       	ldi	r25, 0x00	; 0
+ 4a4:	0e 94 c4 01 	call	0x388	; 0x388 <Dio_init_channel_group>
 
-		
-		Dio_dir cmddir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
- 484:	86 e0       	ldi	r24, 0x06	; 6
- 486:	e6 eb       	ldi	r30, 0xB6	; 182
- 488:	f0 e0       	ldi	r31, 0x00	; 0
- 48a:	de 01       	movw	r26, r28
- 48c:	19 96       	adiw	r26, 0x09	; 9
- 48e:	01 90       	ld	r0, Z+
- 490:	0d 92       	st	X+, r0
- 492:	8a 95       	dec	r24
- 494:	e1 f7       	brne	.-8      	; 0x48e <GLCD_Init+0x40>
-		Dio_init_channel_group(cmd,	6,	cmddir);
- 496:	ae 01       	movw	r20, r28
- 498:	47 5f       	subi	r20, 0xF7	; 247
- 49a:	5f 4f       	sbci	r21, 0xFF	; 255
- 49c:	66 e0       	ldi	r22, 0x06	; 6
- 49e:	80 ea       	ldi	r24, 0xA0	; 160
- 4a0:	90 e0       	ldi	r25, 0x00	; 0
- 4a2:	0e 94 c4 01 	call	0x388	; 0x388 <Dio_init_channel_group>
+	
+	Dio_dir cmddir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
+ 4a8:	86 e0       	ldi	r24, 0x06	; 6
+ 4aa:	e6 eb       	ldi	r30, 0xB6	; 182
+ 4ac:	f0 e0       	ldi	r31, 0x00	; 0
+ 4ae:	de 01       	movw	r26, r28
+ 4b0:	19 96       	adiw	r26, 0x09	; 9
+ 4b2:	01 90       	ld	r0, Z+
+ 4b4:	0d 92       	st	X+, r0
+ 4b6:	8a 95       	dec	r24
+ 4b8:	e1 f7       	brne	.-8      	; 0x4b2 <GLCD_Init+0x40>
+	Dio_init_channel_group(cmd,	6,	cmddir);
+ 4ba:	ae 01       	movw	r20, r28
+ 4bc:	47 5f       	subi	r20, 0xF7	; 247
+ 4be:	5f 4f       	sbci	r21, 0xFF	; 255
+ 4c0:	66 e0       	ldi	r22, 0x06	; 6
+ 4c2:	80 ea       	ldi	r24, 0xA0	; 160
+ 4c4:	90 e0       	ldi	r25, 0x00	; 0
+ 4c6:	0e 94 c4 01 	call	0x388	; 0x388 <Dio_init_channel_group>
+
+#include "Dio.h"
+#include "GLCD_cfg.h"
+#include "GLCD.h"
+
+ void SELECTBOTH()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ 4ca:	60 e0       	ldi	r22, 0x00	; 0
+ 4cc:	8c e0       	ldi	r24, 0x0C	; 12
+ 4ce:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 4d2:	60 e0       	ldi	r22, 0x00	; 0
+ 4d4:	8d e0       	ldi	r24, 0x0D	; 13
+ 4d6:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+	Dio_dir cmddir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
+	Dio_init_channel_group(cmd,	6,	cmddir);
 
 	/* Select both left & right half of display & Keep reset pin high */
-	SELECTBOTH();					
- 4a6:	60 e0       	ldi	r22, 0x00	; 0
- 4a8:	8c e0       	ldi	r24, 0x0C	; 12
- 4aa:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 4ae:	60 e0       	ldi	r22, 0x00	; 0
- 4b0:	8d e0       	ldi	r24, 0x0D	; 13
- 4b2:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
-	Dio_Write_channel(RST,STD_HIGH) ;				
- 4b6:	61 e0       	ldi	r22, 0x01	; 1
- 4b8:	8e e0       	ldi	r24, 0x0E	; 14
- 4ba:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+	SELECTBOTH();
+	Dio_Write_channel(RST,STD_HIGH) ;
+ 4da:	61 e0       	ldi	r22, 0x01	; 1
+ 4dc:	8e e0       	ldi	r24, 0x0E	; 14
+ 4de:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 4be:	8f e3       	ldi	r24, 0x3F	; 63
- 4c0:	9c e9       	ldi	r25, 0x9C	; 156
- 4c2:	01 97       	sbiw	r24, 0x01	; 1
- 4c4:	f1 f7       	brne	.-4      	; 0x4c2 <GLCD_Init+0x74>
- 4c6:	00 c0       	rjmp	.+0      	; 0x4c8 <GLCD_Init+0x7a>
- 4c8:	00 00       	nop
+ 4e2:	8f e3       	ldi	r24, 0x3F	; 63
+ 4e4:	9c e9       	ldi	r25, 0x9C	; 156
+ 4e6:	01 97       	sbiw	r24, 0x01	; 1
+ 4e8:	f1 f7       	brne	.-4      	; 0x4e6 <GLCD_Init+0x74>
+ 4ea:	00 c0       	rjmp	.+0      	; 0x4ec <GLCD_Init+0x7a>
+ 4ec:	00 00       	nop
 	
 	_delay_ms(20);
 	GLCD_Command(0x3E);		/* Display OFF */
- 4ca:	8e e3       	ldi	r24, 0x3E	; 62
- 4cc:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 4ee:	8e e3       	ldi	r24, 0x3E	; 62
+ 4f0:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 	GLCD_Command(0x40);		/* Set Y address (column=0) */
- 4d0:	80 e4       	ldi	r24, 0x40	; 64
- 4d2:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 4f4:	80 e4       	ldi	r24, 0x40	; 64
+ 4f6:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 	GLCD_Command(0xB8);		/* Set x address (page=0) */
- 4d6:	88 eb       	ldi	r24, 0xB8	; 184
- 4d8:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 4fa:	88 eb       	ldi	r24, 0xB8	; 184
+ 4fc:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 	GLCD_Command(0xC0);		/* Set z address (start line=0) */
- 4dc:	80 ec       	ldi	r24, 0xC0	; 192
- 4de:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 500:	80 ec       	ldi	r24, 0xC0	; 192
+ 502:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 	GLCD_Command(0x3F);		/* Display ON */
- 4e2:	8f e3       	ldi	r24, 0x3F	; 63
- 4e4:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 506:	8f e3       	ldi	r24, 0x3F	; 63
+ 508:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 }
- 4e8:	2e 96       	adiw	r28, 0x0e	; 14
- 4ea:	0f b6       	in	r0, 0x3f	; 63
- 4ec:	f8 94       	cli
- 4ee:	de bf       	out	0x3e, r29	; 62
- 4f0:	0f be       	out	0x3f, r0	; 63
- 4f2:	cd bf       	out	0x3d, r28	; 61
- 4f4:	df 91       	pop	r29
- 4f6:	cf 91       	pop	r28
- 4f8:	08 95       	ret
+ 50c:	2e 96       	adiw	r28, 0x0e	; 14
+ 50e:	0f b6       	in	r0, 0x3f	; 63
+ 510:	f8 94       	cli
+ 512:	de bf       	out	0x3e, r29	; 62
+ 514:	0f be       	out	0x3f, r0	; 63
+ 516:	cd bf       	out	0x3d, r28	; 61
+ 518:	df 91       	pop	r29
+ 51a:	cf 91       	pop	r28
+ 51c:	08 95       	ret
 
-000004fa <GLCD_PrintChar>:
+0000051e <GLCD_PrintChar>:
 void GLCD_PrintChar(char x,uint8_t row,uint8_t col)
 {
- 4fa:	ef 92       	push	r14
- 4fc:	ff 92       	push	r15
- 4fe:	0f 93       	push	r16
- 500:	1f 93       	push	r17
- 502:	cf 93       	push	r28
- 504:	df 93       	push	r29
- 506:	f8 2e       	mov	r15, r24
- 508:	e6 2e       	mov	r14, r22
+ 51e:	ef 92       	push	r14
+ 520:	ff 92       	push	r15
+ 522:	0f 93       	push	r16
+ 524:	1f 93       	push	r17
+ 526:	cf 93       	push	r28
+ 528:	df 93       	push	r29
+ 52a:	f8 2e       	mov	r15, r24
+ 52c:	e6 2e       	mov	r14, r22
 	int i = col ;
 	for(i = col; i < 5+col; i++)
- 50a:	04 2f       	mov	r16, r20
- 50c:	10 e0       	ldi	r17, 0x00	; 0
- 50e:	e8 01       	movw	r28, r16
- 510:	27 c0       	rjmp	.+78     	; 0x560 <GLCD_PrintChar+0x66>
-		{		
+ 52e:	04 2f       	mov	r16, r20
+ 530:	10 e0       	ldi	r17, 0x00	; 0
+ 532:	e8 01       	movw	r28, r16
+ 534:	27 c0       	rjmp	.+78     	; 0x584 <GLCD_PrintChar+0x66>
+	{
 		if (64==i) {
- 512:	c0 34       	cpi	r28, 0x40	; 64
- 514:	d1 05       	cpc	r29, r1
- 516:	79 f4       	brne	.+30     	; 0x536 <GLCD_PrintChar+0x3c>
-					SELECTSECOND();
- 518:	61 e0       	ldi	r22, 0x01	; 1
- 51a:	8c e0       	ldi	r24, 0x0C	; 12
- 51c:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 520:	60 e0       	ldi	r22, 0x00	; 0
- 522:	8d e0       	ldi	r24, 0x0D	; 13
- 524:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
-					GLCD_Command(0x40);		/* Set Y address (column=0) */
- 528:	80 e4       	ldi	r24, 0x40	; 64
- 52a:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
-					GLCD_Command(0xB8+row);
- 52e:	88 eb       	ldi	r24, 0xB8	; 184
- 530:	8e 0d       	add	r24, r14
- 532:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
-					}
+ 536:	c0 34       	cpi	r28, 0x40	; 64
+ 538:	d1 05       	cpc	r29, r1
+ 53a:	79 f4       	brne	.+30     	; 0x55a <GLCD_PrintChar+0x3c>
+#include "GLCD_cfg.h"
+#include "GLCD.h"
+
+ void SELECTBOTH()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ void SELECTFIRST()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_LOW)		   ;  }
+ void SELECTSECOND()	{Dio_Write_channel(CS1,!STD_LOW) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ 53c:	61 e0       	ldi	r22, 0x01	; 1
+ 53e:	8c e0       	ldi	r24, 0x0C	; 12
+ 540:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 544:	60 e0       	ldi	r22, 0x00	; 0
+ 546:	8d e0       	ldi	r24, 0x0D	; 13
+ 548:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+	int i = col ;
+	for(i = col; i < 5+col; i++)
+	{
+		if (64==i) {
+			SELECTSECOND();
+			GLCD_Command(0x40);		/* Set Y address (column=0) */
+ 54c:	80 e4       	ldi	r24, 0x40	; 64
+ 54e:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
+			GLCD_Command(0xB8+row);
+ 552:	88 eb       	ldi	r24, 0xB8	; 184
+ 554:	8e 0d       	add	r24, r14
+ 556:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
+		}
 		GLCD_Data(font[x][i-col]);
- 536:	9e 01       	movw	r18, r28
- 538:	20 1b       	sub	r18, r16
- 53a:	31 0b       	sbc	r19, r17
- 53c:	8f 2d       	mov	r24, r15
- 53e:	90 e0       	ldi	r25, 0x00	; 0
- 540:	ac 01       	movw	r20, r24
- 542:	44 0f       	add	r20, r20
- 544:	55 1f       	adc	r21, r21
- 546:	44 0f       	add	r20, r20
- 548:	55 1f       	adc	r21, r21
- 54a:	84 0f       	add	r24, r20
- 54c:	95 1f       	adc	r25, r21
- 54e:	82 51       	subi	r24, 0x12	; 18
- 550:	9f 4f       	sbci	r25, 0xFF	; 255
- 552:	fc 01       	movw	r30, r24
- 554:	e2 0f       	add	r30, r18
- 556:	f3 1f       	adc	r31, r19
- 558:	80 81       	ld	r24, Z
- 55a:	0e 94 08 02 	call	0x410	; 0x410 <GLCD_Data>
+ 55a:	9e 01       	movw	r18, r28
+ 55c:	20 1b       	sub	r18, r16
+ 55e:	31 0b       	sbc	r19, r17
+ 560:	8f 2d       	mov	r24, r15
+ 562:	90 e0       	ldi	r25, 0x00	; 0
+ 564:	ac 01       	movw	r20, r24
+ 566:	44 0f       	add	r20, r20
+ 568:	55 1f       	adc	r21, r21
+ 56a:	44 0f       	add	r20, r20
+ 56c:	55 1f       	adc	r21, r21
+ 56e:	84 0f       	add	r24, r20
+ 570:	95 1f       	adc	r25, r21
+ 572:	84 54       	subi	r24, 0x44	; 68
+ 574:	9f 4f       	sbci	r25, 0xFF	; 255
+ 576:	fc 01       	movw	r30, r24
+ 578:	e2 0f       	add	r30, r18
+ 57a:	f3 1f       	adc	r31, r19
+ 57c:	80 81       	ld	r24, Z
+ 57e:	0e 94 1a 02 	call	0x434	; 0x434 <GLCD_Data>
 	GLCD_Command(0x3F);		/* Display ON */
 }
 void GLCD_PrintChar(char x,uint8_t row,uint8_t col)
 {
 	int i = col ;
 	for(i = col; i < 5+col; i++)
- 55e:	21 96       	adiw	r28, 0x01	; 1
- 560:	c8 01       	movw	r24, r16
- 562:	05 96       	adiw	r24, 0x05	; 5
- 564:	c8 17       	cp	r28, r24
- 566:	d9 07       	cpc	r29, r25
- 568:	a4 f2       	brlt	.-88     	; 0x512 <GLCD_PrintChar+0x18>
-					GLCD_Command(0x40);		/* Set Y address (column=0) */
-					GLCD_Command(0xB8+row);
-					}
-		GLCD_Data(font[x][i-col]);
+ 582:	21 96       	adiw	r28, 0x01	; 1
+ 584:	c8 01       	movw	r24, r16
+ 586:	05 96       	adiw	r24, 0x05	; 5
+ 588:	c8 17       	cp	r28, r24
+ 58a:	d9 07       	cpc	r29, r25
+ 58c:	a4 f2       	brlt	.-88     	; 0x536 <GLCD_PrintChar+0x18>
+			GLCD_Command(0x40);		/* Set Y address (column=0) */
+			GLCD_Command(0xB8+row);
 		}
+		GLCD_Data(font[x][i-col]);
+	}
 }
- 56a:	df 91       	pop	r29
- 56c:	cf 91       	pop	r28
- 56e:	1f 91       	pop	r17
- 570:	0f 91       	pop	r16
- 572:	ff 90       	pop	r15
- 574:	ef 90       	pop	r14
- 576:	08 95       	ret
+ 58e:	df 91       	pop	r29
+ 590:	cf 91       	pop	r28
+ 592:	1f 91       	pop	r17
+ 594:	0f 91       	pop	r16
+ 596:	ff 90       	pop	r15
+ 598:	ef 90       	pop	r14
+ 59a:	08 95       	ret
 
-00000578 <Print_String>:
+0000059c <Print_String>:
 void Print_String(char* x,uint8_t row)
 {
- 578:	cf 92       	push	r12
- 57a:	df 92       	push	r13
- 57c:	ff 92       	push	r15
- 57e:	0f 93       	push	r16
- 580:	1f 93       	push	r17
- 582:	cf 93       	push	r28
- 584:	df 93       	push	r29
- 586:	6c 01       	movw	r12, r24
- 588:	f6 2e       	mov	r15, r22
-	int i = 0,col =0; 
-	SELECTFIRST();
- 58a:	60 e0       	ldi	r22, 0x00	; 0
- 58c:	8c e0       	ldi	r24, 0x0C	; 12
- 58e:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 592:	61 e0       	ldi	r22, 0x01	; 1
- 594:	8d e0       	ldi	r24, 0x0D	; 13
- 596:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
-	GLCD_Command(0x40);	
- 59a:	80 e4       	ldi	r24, 0x40	; 64
- 59c:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
-	GLCD_Command((0xB8) + row);
- 5a0:	88 eb       	ldi	r24, 0xB8	; 184
- 5a2:	8f 0d       	add	r24, r15
- 5a4:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
-		GLCD_Data(font[x][i-col]);
-		}
+ 59c:	cf 92       	push	r12
+ 59e:	df 92       	push	r13
+ 5a0:	ff 92       	push	r15
+ 5a2:	0f 93       	push	r16
+ 5a4:	1f 93       	push	r17
+ 5a6:	cf 93       	push	r28
+ 5a8:	df 93       	push	r29
+ 5aa:	6c 01       	movw	r12, r24
+ 5ac:	f6 2e       	mov	r15, r22
+#include "Dio.h"
+#include "GLCD_cfg.h"
+#include "GLCD.h"
+
+ void SELECTBOTH()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ void SELECTFIRST()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_LOW)		   ;  }
+ 5ae:	60 e0       	ldi	r22, 0x00	; 0
+ 5b0:	8c e0       	ldi	r24, 0x0C	; 12
+ 5b2:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 5b6:	61 e0       	ldi	r22, 0x01	; 1
+ 5b8:	8d e0       	ldi	r24, 0x0D	; 13
+ 5ba:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
 }
 void Print_String(char* x,uint8_t row)
 {
-	int i = 0,col =0; 
- 5a8:	00 e0       	ldi	r16, 0x00	; 0
- 5aa:	10 e0       	ldi	r17, 0x00	; 0
- 5ac:	c0 e0       	ldi	r28, 0x00	; 0
- 5ae:	d0 e0       	ldi	r29, 0x00	; 0
+	int i = 0,col =0;
 	SELECTFIRST();
-	GLCD_Command(0x40);	
+	GLCD_Command(0x40);
+ 5be:	80 e4       	ldi	r24, 0x40	; 64
+ 5c0:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
+	GLCD_Command((0xB8) + row);
+ 5c4:	88 eb       	ldi	r24, 0xB8	; 184
+ 5c6:	8f 0d       	add	r24, r15
+ 5c8:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
+		GLCD_Data(font[x][i-col]);
+	}
+}
+void Print_String(char* x,uint8_t row)
+{
+	int i = 0,col =0;
+ 5cc:	00 e0       	ldi	r16, 0x00	; 0
+ 5ce:	10 e0       	ldi	r17, 0x00	; 0
+ 5d0:	c0 e0       	ldi	r28, 0x00	; 0
+ 5d2:	d0 e0       	ldi	r29, 0x00	; 0
+	SELECTFIRST();
+	GLCD_Command(0x40);
 	GLCD_Command((0xB8) + row);
 	
 	while (x[i])
- 5b0:	07 c0       	rjmp	.+14     	; 0x5c0 <Print_String+0x48>
+ 5d4:	07 c0       	rjmp	.+14     	; 0x5e4 <Print_String+0x48>
 	{
 		GLCD_PrintChar(x[i],row,col);
- 5b2:	40 2f       	mov	r20, r16
- 5b4:	6f 2d       	mov	r22, r15
- 5b6:	0e 94 7d 02 	call	0x4fa	; 0x4fa <GLCD_PrintChar>
+ 5d6:	40 2f       	mov	r20, r16
+ 5d8:	6f 2d       	mov	r22, r15
+ 5da:	0e 94 8f 02 	call	0x51e	; 0x51e <GLCD_PrintChar>
 		i++; col+=5;
- 5ba:	21 96       	adiw	r28, 0x01	; 1
- 5bc:	0b 5f       	subi	r16, 0xFB	; 251
- 5be:	1f 4f       	sbci	r17, 0xFF	; 255
-	int i = 0,col =0; 
+ 5de:	21 96       	adiw	r28, 0x01	; 1
+ 5e0:	0b 5f       	subi	r16, 0xFB	; 251
+ 5e2:	1f 4f       	sbci	r17, 0xFF	; 255
+	int i = 0,col =0;
 	SELECTFIRST();
-	GLCD_Command(0x40);	
+	GLCD_Command(0x40);
 	GLCD_Command((0xB8) + row);
 	
 	while (x[i])
- 5c0:	f6 01       	movw	r30, r12
- 5c2:	ec 0f       	add	r30, r28
- 5c4:	fd 1f       	adc	r31, r29
- 5c6:	80 81       	ld	r24, Z
- 5c8:	81 11       	cpse	r24, r1
- 5ca:	f3 cf       	rjmp	.-26     	; 0x5b2 <Print_String+0x3a>
+ 5e4:	f6 01       	movw	r30, r12
+ 5e6:	ec 0f       	add	r30, r28
+ 5e8:	fd 1f       	adc	r31, r29
+ 5ea:	80 81       	ld	r24, Z
+ 5ec:	81 11       	cpse	r24, r1
+ 5ee:	f3 cf       	rjmp	.-26     	; 0x5d6 <Print_String+0x3a>
 	{
 		GLCD_PrintChar(x[i],row,col);
 		i++; col+=5;
 	}
 }
- 5cc:	df 91       	pop	r29
- 5ce:	cf 91       	pop	r28
- 5d0:	1f 91       	pop	r17
- 5d2:	0f 91       	pop	r16
- 5d4:	ff 90       	pop	r15
- 5d6:	df 90       	pop	r13
- 5d8:	cf 90       	pop	r12
- 5da:	08 95       	ret
+ 5f0:	df 91       	pop	r29
+ 5f2:	cf 91       	pop	r28
+ 5f4:	1f 91       	pop	r17
+ 5f6:	0f 91       	pop	r16
+ 5f8:	ff 90       	pop	r15
+ 5fa:	df 90       	pop	r13
+ 5fc:	cf 90       	pop	r12
+ 5fe:	08 95       	ret
 
-000005dc <GLCD_ClearAll>:
+00000600 <GLCD_ClearAll>:
 void GLCD_ClearAll()			/* GLCD all display clear function */
 {
- 5dc:	0f 93       	push	r16
- 5de:	1f 93       	push	r17
- 5e0:	cf 93       	push	r28
- 5e2:	df 93       	push	r29
+ 600:	0f 93       	push	r16
+ 602:	1f 93       	push	r17
+ 604:	cf 93       	push	r28
+ 606:	df 93       	push	r29
+
+#include "Dio.h"
+#include "GLCD_cfg.h"
+#include "GLCD.h"
+
+ void SELECTBOTH()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+ 608:	60 e0       	ldi	r22, 0x00	; 0
+ 60a:	8c e0       	ldi	r24, 0x0C	; 12
+ 60c:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 610:	60 e0       	ldi	r22, 0x00	; 0
+ 612:	8d e0       	ldi	r24, 0x0D	; 13
+ 614:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+void GLCD_ClearAll()			/* GLCD all display clear function */
+{
 	int i,j;
 
 	SELECTBOTH();
- 5e4:	60 e0       	ldi	r22, 0x00	; 0
- 5e6:	8c e0       	ldi	r24, 0x0C	; 12
- 5e8:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 5ec:	60 e0       	ldi	r22, 0x00	; 0
- 5ee:	8d e0       	ldi	r24, 0x0D	; 13
- 5f0:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
-for(i = 0; i < 8; i++)
- 5f4:	00 e0       	ldi	r16, 0x00	; 0
- 5f6:	10 e0       	ldi	r17, 0x00	; 0
- 5f8:	13 c0       	rjmp	.+38     	; 0x620 <GLCD_ClearAll+0x44>
-	{	
+	for(i = 0; i < 8; i++)
+ 618:	00 e0       	ldi	r16, 0x00	; 0
+ 61a:	10 e0       	ldi	r17, 0x00	; 0
+ 61c:	13 c0       	rjmp	.+38     	; 0x644 <GLCD_ClearAll+0x44>
+	{
 		
-		GLCD_Command(0x40);	
- 5fa:	80 e4       	ldi	r24, 0x40	; 64
- 5fc:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+		GLCD_Command(0x40);
+ 61e:	80 e4       	ldi	r24, 0x40	; 64
+ 620:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 		GLCD_Command((0xB8) + i);
- 600:	88 eb       	ldi	r24, 0xB8	; 184
- 602:	80 0f       	add	r24, r16
- 604:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 624:	88 eb       	ldi	r24, 0xB8	; 184
+ 626:	80 0f       	add	r24, r16
+ 628:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 
 		for(j = 0; j < 64 ; j++)
- 608:	c0 e0       	ldi	r28, 0x00	; 0
- 60a:	d0 e0       	ldi	r29, 0x00	; 0
- 60c:	04 c0       	rjmp	.+8      	; 0x616 <GLCD_ClearAll+0x3a>
-		{	
+ 62c:	c0 e0       	ldi	r28, 0x00	; 0
+ 62e:	d0 e0       	ldi	r29, 0x00	; 0
+ 630:	04 c0       	rjmp	.+8      	; 0x63a <GLCD_ClearAll+0x3a>
+		{
 			GLCD_Data(0);	/* Write zeros to all 64 column */
- 60e:	80 e0       	ldi	r24, 0x00	; 0
- 610:	0e 94 08 02 	call	0x410	; 0x410 <GLCD_Data>
-	{	
+ 632:	80 e0       	ldi	r24, 0x00	; 0
+ 634:	0e 94 1a 02 	call	0x434	; 0x434 <GLCD_Data>
+	{
 		
-		GLCD_Command(0x40);	
+		GLCD_Command(0x40);
 		GLCD_Command((0xB8) + i);
 
 		for(j = 0; j < 64 ; j++)
- 614:	21 96       	adiw	r28, 0x01	; 1
- 616:	c0 34       	cpi	r28, 0x40	; 64
- 618:	d1 05       	cpc	r29, r1
- 61a:	cc f3       	brlt	.-14     	; 0x60e <GLCD_ClearAll+0x32>
+ 638:	21 96       	adiw	r28, 0x01	; 1
+ 63a:	c0 34       	cpi	r28, 0x40	; 64
+ 63c:	d1 05       	cpc	r29, r1
+ 63e:	cc f3       	brlt	.-14     	; 0x632 <GLCD_ClearAll+0x32>
 void GLCD_ClearAll()			/* GLCD all display clear function */
 {
 	int i,j;
 
 	SELECTBOTH();
-for(i = 0; i < 8; i++)
- 61c:	0f 5f       	subi	r16, 0xFF	; 255
- 61e:	1f 4f       	sbci	r17, 0xFF	; 255
- 620:	08 30       	cpi	r16, 0x08	; 8
- 622:	11 05       	cpc	r17, r1
- 624:	54 f3       	brlt	.-44     	; 0x5fa <GLCD_ClearAll+0x1e>
-		{	
+	for(i = 0; i < 8; i++)
+ 640:	0f 5f       	subi	r16, 0xFF	; 255
+ 642:	1f 4f       	sbci	r17, 0xFF	; 255
+ 644:	08 30       	cpi	r16, 0x08	; 8
+ 646:	11 05       	cpc	r17, r1
+ 648:	54 f3       	brlt	.-44     	; 0x61e <GLCD_ClearAll+0x1e>
+		{
 			GLCD_Data(0);	/* Write zeros to all 64 column */
 			//delay_us(5000);
 		}
-	} 
+	}
 	GLCD_Command(0x40);		/* Set Y address (column=0) */
- 626:	80 e4       	ldi	r24, 0x40	; 64
- 628:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 64a:	80 e4       	ldi	r24, 0x40	; 64
+ 64c:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 	GLCD_Command(0xB8);		/* Set x address (page=0) */
- 62c:	88 eb       	ldi	r24, 0xB8	; 184
- 62e:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 650:	88 eb       	ldi	r24, 0xB8	; 184
+ 652:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 
 
 }
- 632:	df 91       	pop	r29
- 634:	cf 91       	pop	r28
- 636:	1f 91       	pop	r17
- 638:	0f 91       	pop	r16
- 63a:	08 95       	ret
+ 656:	df 91       	pop	r29
+ 658:	cf 91       	pop	r28
+ 65a:	1f 91       	pop	r17
+ 65c:	0f 91       	pop	r16
+ 65e:	08 95       	ret
 
-0000063c <main>:
+00000660 <main>:
+
+
+
 
 int main(void)
 {
- 63c:	cf 93       	push	r28
- 63e:	df 93       	push	r29
- 640:	cd b7       	in	r28, 0x3d	; 61
- 642:	de b7       	in	r29, 0x3e	; 62
- 644:	a6 97       	sbiw	r28, 0x26	; 38
- 646:	0f b6       	in	r0, 0x3f	; 63
- 648:	f8 94       	cli
- 64a:	de bf       	out	0x3e, r29	; 62
- 64c:	0f be       	out	0x3f, r0	; 63
- 64e:	cd bf       	out	0x3d, r28	; 61
+ 660:	cf 93       	push	r28
+ 662:	df 93       	push	r29
+ 664:	cd b7       	in	r28, 0x3d	; 61
+ 666:	de b7       	in	r29, 0x3e	; 62
+ 668:	a6 97       	sbiw	r28, 0x26	; 38
+ 66a:	0f b6       	in	r0, 0x3f	; 63
+ 66c:	f8 94       	cli
+ 66e:	de bf       	out	0x3e, r29	; 62
+ 670:	0f be       	out	0x3f, r0	; 63
+ 672:	cd bf       	out	0x3d, r28	; 61
 	GLCD_Init();
- 650:	0e 94 27 02 	call	0x44e	; 0x44e <GLCD_Init>
+ 674:	0e 94 39 02 	call	0x472	; 0x472 <GLCD_Init>
 	GLCD_ClearAll();
- 654:	0e 94 ee 02 	call	0x5dc	; 0x5dc <GLCD_ClearAll>
+ 678:	0e 94 00 03 	call	0x600	; 0x600 <GLCD_ClearAll>
 	Print_String("PWM Signal ",1);
- 658:	61 e0       	ldi	r22, 0x01	; 1
- 65a:	8c eb       	ldi	r24, 0xBC	; 188
- 65c:	90 e0       	ldi	r25, 0x00	; 0
- 65e:	0e 94 bc 02 	call	0x578	; 0x578 <Print_String>
+ 67c:	61 e0       	ldi	r22, 0x01	; 1
+ 67e:	81 e4       	ldi	r24, 0x41	; 65
+ 680:	93 e0       	ldi	r25, 0x03	; 3
+ 682:	0e 94 ce 02 	call	0x59c	; 0x59c <Print_String>
 
 	int pwmvalue = 0;
 	int timefactor = 10;
 	char duty[] = "Duty Cycle = 00 %";
- 662:	82 e1       	ldi	r24, 0x12	; 18
- 664:	e8 ec       	ldi	r30, 0xC8	; 200
- 666:	f0 e0       	ldi	r31, 0x00	; 0
- 668:	de 01       	movw	r26, r28
- 66a:	11 96       	adiw	r26, 0x01	; 1
- 66c:	01 90       	ld	r0, Z+
- 66e:	0d 92       	st	X+, r0
- 670:	8a 95       	dec	r24
- 672:	e1 f7       	brne	.-8      	; 0x66c <main+0x30>
+ 686:	82 e1       	ldi	r24, 0x12	; 18
+ 688:	ed e4       	ldi	r30, 0x4D	; 77
+ 68a:	f3 e0       	ldi	r31, 0x03	; 3
+ 68c:	de 01       	movw	r26, r28
+ 68e:	11 96       	adiw	r26, 0x01	; 1
+ 690:	01 90       	ld	r0, Z+
+ 692:	0d 92       	st	X+, r0
+ 694:	8a 95       	dec	r24
+ 696:	e1 f7       	brne	.-8      	; 0x690 <main+0x30>
 	char freq[] = "frequency =	320 KHZ";
- 674:	84 e1       	ldi	r24, 0x14	; 20
- 676:	ea ed       	ldi	r30, 0xDA	; 218
- 678:	f0 e0       	ldi	r31, 0x00	; 0
- 67a:	de 01       	movw	r26, r28
- 67c:	53 96       	adiw	r26, 0x13	; 19
- 67e:	01 90       	ld	r0, Z+
- 680:	0d 92       	st	X+, r0
- 682:	8a 95       	dec	r24
- 684:	e1 f7       	brne	.-8      	; 0x67e <main+0x42>
+ 698:	84 e1       	ldi	r24, 0x14	; 20
+ 69a:	ef e5       	ldi	r30, 0x5F	; 95
+ 69c:	f3 e0       	ldi	r31, 0x03	; 3
+ 69e:	de 01       	movw	r26, r28
+ 6a0:	53 96       	adiw	r26, 0x13	; 19
+ 6a2:	01 90       	ld	r0, Z+
+ 6a4:	0d 92       	st	X+, r0
+ 6a6:	8a 95       	dec	r24
+ 6a8:	e1 f7       	brne	.-8      	; 0x6a2 <main+0x42>
 {
 	GLCD_Init();
 	GLCD_ClearAll();
 	Print_String("PWM Signal ",1);
 
 	int pwmvalue = 0;
- 686:	81 2c       	mov	r8, r1
- 688:	91 2c       	mov	r9, r1
+ 6aa:	81 2c       	mov	r8, r1
+ 6ac:	91 2c       	mov	r9, r1
 	int timefactor = 10;
 	char duty[] = "Duty Cycle = 00 %";
 	char freq[] = "frequency =	320 KHZ";
 	while(1)
 	{
 		SELECTFIRST();
- 68a:	60 e0       	ldi	r22, 0x00	; 0
- 68c:	8c e0       	ldi	r24, 0x0C	; 12
- 68e:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 692:	61 e0       	ldi	r22, 0x01	; 1
- 694:	8d e0       	ldi	r24, 0x0D	; 13
- 696:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 6ae:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <SELECTFIRST>
 		GLCD_Command(0x40);		/* Set Y address (column=0) */
- 69a:	80 e4       	ldi	r24, 0x40	; 64
- 69c:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 6b2:	80 e4       	ldi	r24, 0x40	; 64
+ 6b4:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 		GLCD_Command(0xB8+2);		/* Set x address (page=0) */
- 6a0:	8a eb       	ldi	r24, 0xBA	; 186
- 6a2:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 6b8:	8a eb       	ldi	r24, 0xBA	; 186
+ 6ba:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 		int dc = pwmvalue*100/256;
- 6a6:	24 e6       	ldi	r18, 0x64	; 100
- 6a8:	28 9d       	mul	r18, r8
- 6aa:	c0 01       	movw	r24, r0
- 6ac:	29 9d       	mul	r18, r9
- 6ae:	90 0d       	add	r25, r0
- 6b0:	11 24       	eor	r1, r1
- 6b2:	9c 01       	movw	r18, r24
- 6b4:	99 23       	and	r25, r25
- 6b6:	14 f4       	brge	.+4      	; 0x6bc <main+0x80>
- 6b8:	21 50       	subi	r18, 0x01	; 1
- 6ba:	3f 4f       	sbci	r19, 0xFF	; 255
- 6bc:	23 2f       	mov	r18, r19
- 6be:	22 0f       	add	r18, r18
- 6c0:	22 0b       	sbc	r18, r18
+ 6be:	24 e6       	ldi	r18, 0x64	; 100
+ 6c0:	28 9d       	mul	r18, r8
+ 6c2:	c0 01       	movw	r24, r0
+ 6c4:	29 9d       	mul	r18, r9
+ 6c6:	90 0d       	add	r25, r0
+ 6c8:	11 24       	eor	r1, r1
+ 6ca:	9c 01       	movw	r18, r24
+ 6cc:	99 23       	and	r25, r25
+ 6ce:	14 f4       	brge	.+4      	; 0x6d4 <main+0x74>
+ 6d0:	21 50       	subi	r18, 0x01	; 1
+ 6d2:	3f 4f       	sbci	r19, 0xFF	; 255
+ 6d4:	23 2f       	mov	r18, r19
+ 6d6:	22 0f       	add	r18, r18
+ 6d8:	22 0b       	sbc	r18, r18
 		duty[13] = dc/10+'0';
- 6c2:	60 e0       	ldi	r22, 0x00	; 0
- 6c4:	7a e0       	ldi	r23, 0x0A	; 10
- 6c6:	0e 94 e0 03 	call	0x7c0	; 0x7c0 <__divmodhi4>
- 6ca:	60 5d       	subi	r22, 0xD0	; 208
- 6cc:	6e 87       	std	Y+14, r22	; 0x0e
+ 6da:	60 e0       	ldi	r22, 0x00	; 0
+ 6dc:	7a e0       	ldi	r23, 0x0A	; 10
+ 6de:	0e 94 e0 03 	call	0x7c0	; 0x7c0 <__divmodhi4>
+ 6e2:	60 5d       	subi	r22, 0xD0	; 208
+ 6e4:	6e 87       	std	Y+14, r22	; 0x0e
 		duty[14] = dc%10+'0';
- 6ce:	0a e0       	ldi	r16, 0x0A	; 10
- 6d0:	10 e0       	ldi	r17, 0x00	; 0
- 6d2:	83 2f       	mov	r24, r19
- 6d4:	92 2f       	mov	r25, r18
- 6d6:	b8 01       	movw	r22, r16
- 6d8:	0e 94 e0 03 	call	0x7c0	; 0x7c0 <__divmodhi4>
- 6dc:	80 5d       	subi	r24, 0xD0	; 208
- 6de:	8f 87       	std	Y+15, r24	; 0x0f
+ 6e6:	0a e0       	ldi	r16, 0x0A	; 10
+ 6e8:	10 e0       	ldi	r17, 0x00	; 0
+ 6ea:	83 2f       	mov	r24, r19
+ 6ec:	92 2f       	mov	r25, r18
+ 6ee:	b8 01       	movw	r22, r16
+ 6f0:	0e 94 e0 03 	call	0x7c0	; 0x7c0 <__divmodhi4>
+ 6f4:	80 5d       	subi	r24, 0xD0	; 208
+ 6f6:	8f 87       	std	Y+15, r24	; 0x0f
 		Print_String(duty,2);
- 6e0:	62 e0       	ldi	r22, 0x02	; 2
- 6e2:	ce 01       	movw	r24, r28
- 6e4:	01 96       	adiw	r24, 0x01	; 1
- 6e6:	0e 94 bc 02 	call	0x578	; 0x578 <Print_String>
+ 6f8:	62 e0       	ldi	r22, 0x02	; 2
+ 6fa:	ce 01       	movw	r24, r28
+ 6fc:	01 96       	adiw	r24, 0x01	; 1
+ 6fe:	0e 94 ce 02 	call	0x59c	; 0x59c <Print_String>
 		Print_String(freq,3);
- 6ea:	63 e0       	ldi	r22, 0x03	; 3
- 6ec:	ce 01       	movw	r24, r28
- 6ee:	43 96       	adiw	r24, 0x13	; 19
- 6f0:	0e 94 bc 02 	call	0x578	; 0x578 <Print_String>
+ 702:	63 e0       	ldi	r22, 0x03	; 3
+ 704:	ce 01       	movw	r24, r28
+ 706:	43 96       	adiw	r24, 0x13	; 19
+ 708:	0e 94 ce 02 	call	0x59c	; 0x59c <Print_String>
 		
 		SELECTFIRST();
- 6f4:	60 e0       	ldi	r22, 0x00	; 0
- 6f6:	8c e0       	ldi	r24, 0x0C	; 12
- 6f8:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 6fc:	61 e0       	ldi	r22, 0x01	; 1
- 6fe:	8d e0       	ldi	r24, 0x0D	; 13
- 700:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 70c:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <SELECTFIRST>
 		GLCD_Command(0x40);		/* Set Y address (column=0) */
- 704:	80 e4       	ldi	r24, 0x40	; 64
- 706:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 710:	80 e4       	ldi	r24, 0x40	; 64
+ 712:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 		GLCD_Command(0xB8+5);
- 70a:	8d eb       	ldi	r24, 0xBD	; 189
- 70c:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 716:	8d eb       	ldi	r24, 0xBD	; 189
+ 718:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 		
 		
 		int x = pwmvalue/timefactor;
- 710:	c4 01       	movw	r24, r8
- 712:	b8 01       	movw	r22, r16
- 714:	0e 94 e0 03 	call	0x7c0	; 0x7c0 <__divmodhi4>
- 718:	5b 01       	movw	r10, r22
+ 71c:	c4 01       	movw	r24, r8
+ 71e:	b8 01       	movw	r22, r16
+ 720:	0e 94 e0 03 	call	0x7c0	; 0x7c0 <__divmodhi4>
+ 724:	5b 01       	movw	r10, r22
 		int k = 0;
 		int nextk = 256/timefactor;
 		for (int i = 0 ;i<128;i++)
- 71a:	00 e0       	ldi	r16, 0x00	; 0
- 71c:	10 e0       	ldi	r17, 0x00	; 0
+ 726:	00 e0       	ldi	r16, 0x00	; 0
+ 728:	10 e0       	ldi	r17, 0x00	; 0
 		GLCD_Command(0xB8+5);
 		
 		
 		int x = pwmvalue/timefactor;
 		int k = 0;
 		int nextk = 256/timefactor;
- 71e:	0f 2e       	mov	r0, r31
- 720:	f9 e1       	ldi	r31, 0x19	; 25
- 722:	ef 2e       	mov	r14, r31
- 724:	f1 2c       	mov	r15, r1
- 726:	f0 2d       	mov	r31, r0
+ 72a:	0f 2e       	mov	r0, r31
+ 72c:	f9 e1       	ldi	r31, 0x19	; 25
+ 72e:	ef 2e       	mov	r14, r31
+ 730:	f1 2c       	mov	r15, r1
+ 732:	f0 2d       	mov	r31, r0
 		GLCD_Command(0x40);		/* Set Y address (column=0) */
 		GLCD_Command(0xB8+5);
 		
 		
 		int x = pwmvalue/timefactor;
 		int k = 0;
- 728:	c1 2c       	mov	r12, r1
- 72a:	d1 2c       	mov	r13, r1
+ 734:	c1 2c       	mov	r12, r1
+ 736:	d1 2c       	mov	r13, r1
 		int nextk = 256/timefactor;
 		for (int i = 0 ;i<128;i++)
- 72c:	32 c0       	rjmp	.+100    	; 0x792 <main+0x156>
+ 738:	2c c0       	rjmp	.+88     	; 0x792 <main+0x132>
 		{
 			if (64==i) {
- 72e:	00 34       	cpi	r16, 0x40	; 64
- 730:	11 05       	cpc	r17, r1
- 732:	71 f4       	brne	.+28     	; 0x750 <main+0x114>
+ 73a:	00 34       	cpi	r16, 0x40	; 64
+ 73c:	11 05       	cpc	r17, r1
+ 73e:	41 f4       	brne	.+16     	; 0x750 <main+0xf0>
 				SELECTSECOND();
- 734:	61 e0       	ldi	r22, 0x01	; 1
- 736:	8c e0       	ldi	r24, 0x0C	; 12
- 738:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
- 73c:	60 e0       	ldi	r22, 0x00	; 0
- 73e:	8d e0       	ldi	r24, 0x0D	; 13
- 740:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Dio_Write_channel>
+ 740:	0e 94 f2 01 	call	0x3e4	; 0x3e4 <SELECTSECOND>
 				GLCD_Command(0x40);		/* Set Y address (column=0) */
  744:	80 e4       	ldi	r24, 0x40	; 64
- 746:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 746:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 				GLCD_Command(0xB8+5);
  74a:	8d eb       	ldi	r24, 0xBD	; 189
- 74c:	0e 94 e9 01 	call	0x3d2	; 0x3d2 <GLCD_Command>
+ 74c:	0e 94 fb 01 	call	0x3f6	; 0x3f6 <GLCD_Command>
 			}
 			if (i == nextk)
  750:	e0 16       	cp	r14, r16
  752:	f1 06       	cpc	r15, r17
- 754:	41 f4       	brne	.+16     	; 0x766 <main+0x12a>
+ 754:	41 f4       	brne	.+16     	; 0x766 <main+0x106>
 			{
 				GLCD_Data(CHANGEVOLT);
  756:	8f ef       	ldi	r24, 0xFF	; 255
- 758:	0e 94 08 02 	call	0x410	; 0x410 <GLCD_Data>
+ 758:	0e 94 1a 02 	call	0x434	; 0x434 <GLCD_Data>
 				k = nextk;
  75c:	67 01       	movw	r12, r14
 				nextk = 256/timefactor+i;
  75e:	c8 01       	movw	r24, r16
  760:	49 96       	adiw	r24, 0x19	; 25
  762:	7c 01       	movw	r14, r24
- 764:	14 c0       	rjmp	.+40     	; 0x78e <main+0x152>
+ 764:	14 c0       	rjmp	.+40     	; 0x78e <main+0x12e>
 				
 			}
 			else if (i == x +k )
@@ -1163,28 +1210,28 @@ int main(void)
  76a:	9b 1d       	adc	r25, r11
  76c:	08 17       	cp	r16, r24
  76e:	19 07       	cpc	r17, r25
- 770:	21 f4       	brne	.+8      	; 0x77a <main+0x13e>
+ 770:	21 f4       	brne	.+8      	; 0x77a <main+0x11a>
 			{
 				GLCD_Data(CHANGEVOLT);
  772:	8f ef       	ldi	r24, 0xFF	; 255
- 774:	0e 94 08 02 	call	0x410	; 0x410 <GLCD_Data>
- 778:	0a c0       	rjmp	.+20     	; 0x78e <main+0x152>
+ 774:	0e 94 1a 02 	call	0x434	; 0x434 <GLCD_Data>
+ 778:	0a c0       	rjmp	.+20     	; 0x78e <main+0x12e>
 			}
 			
 			else if(i > x+k)
  77a:	80 17       	cp	r24, r16
  77c:	91 07       	cpc	r25, r17
- 77e:	24 f4       	brge	.+8      	; 0x788 <main+0x14c>
+ 77e:	24 f4       	brge	.+8      	; 0x788 <main+0x128>
 			{
 				GLCD_Data(LOWVOLT);
  780:	80 e8       	ldi	r24, 0x80	; 128
- 782:	0e 94 08 02 	call	0x410	; 0x410 <GLCD_Data>
- 786:	03 c0       	rjmp	.+6      	; 0x78e <main+0x152>
+ 782:	0e 94 1a 02 	call	0x434	; 0x434 <GLCD_Data>
+ 786:	03 c0       	rjmp	.+6      	; 0x78e <main+0x12e>
 			}
 			else {
 				GLCD_Data(HIGHVOLT);
  788:	81 e0       	ldi	r24, 0x01	; 1
- 78a:	0e 94 08 02 	call	0x410	; 0x410 <GLCD_Data>
+ 78a:	0e 94 1a 02 	call	0x434	; 0x434 <GLCD_Data>
 		
 		
 		int x = pwmvalue/timefactor;
@@ -1195,7 +1242,7 @@ int main(void)
  790:	1f 4f       	sbci	r17, 0xFF	; 255
  792:	00 38       	cpi	r16, 0x80	; 128
  794:	11 05       	cpc	r17, r1
- 796:	5c f2       	brlt	.-106    	; 0x72e <main+0xf2>
+ 796:	8c f2       	brlt	.-94     	; 0x73a <main+0xda>
 			else {
 				GLCD_Data(HIGHVOLT);
 			}
@@ -1209,8 +1256,8 @@ int main(void)
  79e:	2f ef       	ldi	r18, 0xFF	; 255
  7a0:	82 16       	cp	r8, r18
  7a2:	91 04       	cpc	r9, r1
- 7a4:	19 f0       	breq	.+6      	; 0x7ac <main+0x170>
- 7a6:	14 f0       	brlt	.+4      	; 0x7ac <main+0x170>
+ 7a4:	19 f0       	breq	.+6      	; 0x7ac <main+0x14c>
+ 7a6:	14 f0       	brlt	.+4      	; 0x7ac <main+0x14c>
  7a8:	81 2c       	mov	r8, r1
  7aa:	91 2c       	mov	r9, r1
  7ac:	8f ef       	ldi	r24, 0xFF	; 255
@@ -1219,10 +1266,10 @@ int main(void)
  7b2:	81 50       	subi	r24, 0x01	; 1
  7b4:	90 40       	sbci	r25, 0x00	; 0
  7b6:	20 40       	sbci	r18, 0x00	; 0
- 7b8:	e1 f7       	brne	.-8      	; 0x7b2 <main+0x176>
- 7ba:	00 c0       	rjmp	.+0      	; 0x7bc <main+0x180>
+ 7b8:	e1 f7       	brne	.-8      	; 0x7b2 <main+0x152>
+ 7ba:	00 c0       	rjmp	.+0      	; 0x7bc <main+0x15c>
  7bc:	00 00       	nop
- 7be:	65 cf       	rjmp	.-310    	; 0x68a <main+0x4e>
+ 7be:	77 cf       	rjmp	.-274    	; 0x6ae <main+0x4e>
 
 000007c0 <__divmodhi4>:
  7c0:	97 fb       	bst	r25, 7

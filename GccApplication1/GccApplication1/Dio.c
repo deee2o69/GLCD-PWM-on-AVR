@@ -6,6 +6,10 @@
  */ 
 #include <stdint-gcc.h>
 #include <avr/io.h>
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+#include <util/delay.h>
 #include "DIO_cfg.h"
 #include "Dio.h"
 
