@@ -16,7 +16,7 @@
 #define CS2			(13)
 #define RST			(14)
 
-uint8_t dataPort[] = {1,2,3,4,5,6,7,8};
+uint8_t dataPort[] = {24,25,26,27,28,29,30,31};
 uint8_t cmd[] = {RS,RW,EN,CS1,CS2,RST};
 	
 const uint8_t font[][5]={
