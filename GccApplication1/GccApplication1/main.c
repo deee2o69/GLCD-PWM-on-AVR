@@ -25,61 +25,68 @@ int main(void)
 {
 	GLCD_Init();
 	GLCD_ClearAll();
-	Print_String("PWM Signal ",1);
+	Print_String("PWM Signal ", 1);
 
 	int pwmvalue = 0;
-	int timefactor = 10;
+	int timefactor = 2; //min:2 max: 25
 	char duty[] = "Duty Cycle = 00 %";
-	char freq[] = "frequency =	320 KHZ";
-	while(1)
+	char freq[] = "Frequency = 320 KHZ";
+
+	while (1)
 	{
 		SELECTFIRST();
-		GLCD_Command(0x40);		/* Set Y address (column=0) */
-		GLCD_Command(0xB8+2);		/* Set x address (page=0) */
-		int dc = pwmvalue*100/256;
+		GLCD_Command(0x40);        /* Set Y address (column=0) */
+		GLCD_Command(0xB8 + 2);     /* Set x address (page=0) */
+
+		int dc = pwmvalue * 100 / 256;
 		duty[13] = dc/10+'0';
 		duty[14] = dc%10+'0';
-		Print_String(duty,2);
-		Print_String(freq,3);
-		
+
+		Print_String(duty, 2);
+		Print_String(freq, 3);
+
 		SELECTFIRST();
-		GLCD_Command(0x40);		/* Set Y address (column=0) */
-		GLCD_Command(0xB8+5);
-		
-		
-		int x = pwmvalue/timefactor;
+		GLCD_Command(0x40);        /* Set Y address (column=0) */
+		GLCD_Command(0xB8 + 5);
+
+		int x = pwmvalue / timefactor;
+		int nextk = 256 / timefactor;
 		int k = 0;
-		int nextk = 256/timefactor;
-		for (int i = 0 ;i<128;i++)
+
+		for (int i = 0; i < 128; i++)
 		{
-			if (64==i) {
+			if (i == 64)
+			{
 				SELECTSECOND();
-				GLCD_Command(0x40);		/* Set Y address (column=0) */
-				GLCD_Command(0xB8+5);
+				GLCD_Command(0x40); /* Set Y address (column=0) */
+				GLCD_Command(0xB8 + 5);
 			}
-			if (i == nextk)
+
+			if (i == nextk || i == x + k)
 			{
 				GLCD_Data(CHANGEVOLT);
-				k = nextk;
-				nextk = 256/timefactor+i;
-				
+				if (i == nextk)
+				{
+					k = nextk;
+					nextk = 256 / timefactor + i;
+				}
 			}
-			else if (i == x +k )
-			{
-				GLCD_Data(CHANGEVOLT);
-			}
-			
-			else if(i > x+k)
+			else if (i > x + k)
 			{
 				GLCD_Data(LOWVOLT);
 			}
-			else {
+			else
+			{
 				GLCD_Data(HIGHVOLT);
 			}
-	
 		}
-		pwmvalue += 10;
-		if (pwmvalue >255)pwmvalue = 0;
+
+		pwmvalue += 20;
+		if (pwmvalue > 255)
+		{
+			pwmvalue = 0;
+		}
+
 		_delay_ms(100);
 	}
 }
