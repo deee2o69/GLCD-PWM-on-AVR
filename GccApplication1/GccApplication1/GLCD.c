@@ -11,57 +11,62 @@
 #endif
 #include <util/delay.h>
 
-#include "Dio.h"
+#include "MCAL/DIO/Dio.h"
 #include "GLCD_cfg.h"
 #include "GLCD.h"
 
- void SELECTBOTH()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
- void SELECTFIRST()	{Dio_Write_channel(CS1,!STD_HIGH) ;Dio_Write_channel(CS2,!STD_LOW)		   ;  }
- void SELECTSECOND()	{Dio_Write_channel(CS1,!STD_LOW) ;Dio_Write_channel(CS2,!STD_HIGH)		   ;  }
+void SELECTBOTH()   { Dio_WriteChannel(CS1, DIO_LOW); Dio_WriteChannel(CS2, DIO_LOW); }
+
+void SELECTFIRST()  { Dio_WriteChannel(CS1, DIO_LOW); Dio_WriteChannel(CS2, DIO_HIGH); }
+
+void SELECTSECOND() { Dio_WriteChannel(CS1, DIO_HIGH); Dio_WriteChannel(CS2, DIO_LOW); }
 
 
-void GLCD_Command(char Command)		/* GLCD command function */
+
+void GLCD_Command(char Command)
 {
-	Dio_Write_channel_group(dataport,8,Command);		/* Copy command on data pin */
-	Dio_Write_channel(RS,STD_LOW) ;						/* Make RS LOW for command register*/
-	Dio_Write_channel(RW,STD_LOW) ;						/* Make RW LOW for write operation */
-	Dio_Write_channel(EN,STD_HIGH); 					/* Make HIGH-LOW transition on Enable */
+	Dio_WriteChannelGroup(dataPort, 8, Command);    /* Copy command on data Pin */
+	Dio_WriteChannel(RS, DIO_LOW);                  /* Make RS LOW for command register */
+	Dio_WriteChannel(RW, DIO_LOW);                  /* Make RW LOW for write operation */
+	Dio_WriteChannel(EN, DIO_HIGH);                 /* Make HIGH-LOW transition on Enable */
 	_delay_us(5);
-	Dio_Write_channel(EN,STD_LOW);
+	Dio_WriteChannel(EN, DIO_LOW);
 	_delay_us(5);
 }
 
-void GLCD_Data(char Data)		/* GLCD data function */
+
+void GLCD_Data(char Data)
 {
-	Dio_Write_channel_group(dataport,8,Data);		/* Copy command on data pin */
-	Dio_Write_channel(RS,STD_HIGH) ;						/* Make RS LOW for command register*/
-	Dio_Write_channel(RW,STD_LOW) ;						/* Make RW LOW for write operation */
-	Dio_Write_channel(EN,STD_HIGH); 					/* Make HIGH-LOW transition on Enable */
+	Dio_WriteChannelGroup(dataPort, 8, Data);   /* Copy data on data Pin */
+	Dio_WriteChannel(RS, DIO_HIGH);             /* Make RS HIGH for data register */
+	Dio_WriteChannel(RW, DIO_LOW);              /* Make RW LOW for write operation */
+	Dio_WriteChannel(EN, DIO_HIGH);             /* Make HIGH-LOW transition on Enable */
 	_delay_us(5);
-	Dio_Write_channel(EN,STD_LOW);
+	Dio_WriteChannel(EN, DIO_LOW);
 	_delay_us(5);
 }
 
-void GLCD_Init()			/* GLCD initialize function */
+
+void GLCD_Init()
 {
-	Dio_dir dataportdir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
-	Dio_init_channel_group(dataport,	8,	dataportdir);
+	Dio_DirectionType dataPortdir[] = {DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT};
+	Dio_InitChannelGroup(dataPort, 8, dataPortdir);
 
-	
-	Dio_dir cmddir[] ={STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT,STD_OUTPUT};
-	Dio_init_channel_group(cmd,	6,	cmddir);
+	Dio_DirectionType cmddir[] = {DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT, DIO_OUTPUT};
+	Dio_InitChannelGroup(cmd, 6, cmddir);
 
-	/* Select both left & right half of display & Keep reset pin high */
+	/* Select both left & right half of display & Keep reset Pin high */
 	SELECTBOTH();
-	Dio_Write_channel(RST,STD_HIGH) ;
-	
+	Dio_WriteChannel(RST, DIO_HIGH);
+
 	_delay_ms(20);
-	GLCD_Command(0x3E);		/* Display OFF */
-	GLCD_Command(0x40);		/* Set Y address (column=0) */
-	GLCD_Command(0xB8);		/* Set x address (page=0) */
-	GLCD_Command(0xC0);		/* Set z address (start line=0) */
-	GLCD_Command(0x3F);		/* Display ON */
+	GLCD_Command(0x3E); /* Display OFF */
+	GLCD_Command(0x40); /* Set Y address (column=0) */
+	GLCD_Command(0xB8); /* Set x address (page=0) */
+	GLCD_Command(0xC0); /* Set z address (start line=0) */
+	GLCD_Command(0x3F); /* Display ON */
 }
+
 void GLCD_PrintChar(char x,uint8_t row,uint8_t col)
 {
 	int i = col ;

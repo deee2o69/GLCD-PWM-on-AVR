@@ -23,9 +23,9 @@ extern void GLCD_Init()		;	/* GLCD initialize function */
 extern void GLCD_PrintChar(char x,uint8_t row,uint8_t col);
 extern void Print_String(char* x,uint8_t row);
 extern void GLCD_ClearAll()		; /* GLCD all display clear function */
-extern inline void SELECTBOTH();
-extern inline void SELECTFIRST();
-extern inline void SELECTSECOND();
+extern  void SELECTBOTH();
+extern  void SELECTFIRST();
+extern  void SELECTSECOND();
 
 
 
